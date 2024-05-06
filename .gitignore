@@ -1,0 +1,44 @@
+# Admin files & folders that may accidentally escape
+# Root
+__pycache__/
+.confluent
+.external-licenses/dist
+.vscode
+.venv
+.env
+
+# Folders
+schemas/__pycache__
+scripts/__pycache__
+utils/__pycache__
+
+
+# Models saved locally for testing (LOKAL doesn't need them for setup - they download when called/used)
+# pyannote (segmentation & diarisation)
+models/diarization/config.yaml
+models/diarization/handler.py
+models/diarization/LICENSE
+models/diarization/README.md
+models/diarization/requirements.txt
+models/embedding/config.yaml
+models/embedding/LICENSE
+models/embedding/pytorch_model.bin
+models/embedding/README.md
+models/segmentation/config.yaml
+models/segmentation/LICENSE
+models/segmentation/pytorch_model.bin
+models/segmentation/README.md
+
+# Whisper (transcription)
+models/whisper/tiny.pt
+models/whisper/tiny.en.pt
+models/whisper/base.pt
+models/whisper/base.en.pt
+models/whisper/small.pt
+models/whisper/small.en.pt
+models/whisper/medium.pt
+models/whisper/medium.en.pt
+models/whisper/large.pt
+models/whisper/large-v1.pt
+models/whisper/large-v2.pt
+models/whisper/large-v3.pt
