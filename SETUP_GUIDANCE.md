@@ -1,9 +1,13 @@
 # LOKAL for Kafka (setup guidance)
-This file contains rough setup and usage instructions for LOKAL for Kafka (LfK). 
+This file contains rough setup and usage instructions for LOKAL for Kafka (LfK).
 
 Please note that the guidance is intended for developers who understand both Kafka and Python and is meant only as illustrative rough guidance.
 
-LfK is meant to be integrated in other systems. Actual setup requires considering the specific needs of the broader ecosystem. This may call for significant changes to anything and everything covered in this guidance.
+LfK is being open-sourced in a generic alpha version to allow integration into broader ecosystems. Actual setup requires considering the specific needs of the broader ecosystem. This may call for significant changes to anything and everything covered in this guidance.
+
+For the same reason, please also note the software is not nor tries to be a production-ready solution. While basic testing has been done to ensure a degree of operability and robustness, LfK as not been tested in its final intended setting – this is only logically possible upon integrating it into a broader ecosystem.
+
+Linting pending.
 
 ## Prerequisites
 This section covers the steps needed to set up the basic Kafka and Python infrastructure needed to run LfK.
@@ -118,10 +122,17 @@ In real world conditions, you probably need several topics with a carefully calc
 
 Having said that, the *'admin.py* file can help you rapidly set up topics to run LfK in its generic form.
 
-### Audio producer
-Audio detection and production of audio messages is handled from the file called *producer_audios.py*. This file is logically divided into two sections.
+## Operational logic
+The following sections explain the overall production-consumption-production-consumption logic by which audios created in a specific local device are transcribed and made available to many other devices (which may or may not include the audio originator).
 
-#### Audio producer > Watchdog
+> Note. Please keep in mind that LfK is compatible with both Avro and JSON schemas, which is handled via strategically placed IFs across files. 
+
+### Producing audios (in local devices)
+Audio detection and production of audio messages is handled from the file called *producer_audios.py*.
+
+This file is logically divided into two sections.
+
+#### Watchdog
 LfK uses Python Watchdog to keep an eye on the source folder (set in .env) for any audio files saved to it. Once an audio file is saved to the source folder, Watchdog sends the audio location to the second part of the producer.
 
 The structure of LfK's source folder is important. The folder has two levels of subfolders, which determine the type of transcription you will get. You can in theory drop audio files to this folder, but it might make more sense to think about it as a destination to programatically drop audios created by a different application (which allows you to easily manage the subfolder the audio goes to by, e.g., giving user choices via dropdowns):
@@ -138,7 +149,7 @@ The structure of LfK's source folder is important. The folder has two levels of 
 
 If you opt to use a different source folder, you will need to figure out how to include the subfolder structure in the message's *path_to_audio* field because the transcription consumer gets styling information from this path. 
 
-#### Audio producer > Kafka
+#### Message
 The Kafka producer section of *producer_audios.py* is essentially an audio splitter and messaging loop. 
 * Ideal audio segment size is calculated after considering the size and duration of the audio, the max_message size of topic, and the ratios set in *.env*.
 * The main audio is segmented into as many chunks as needed.
@@ -155,12 +166,38 @@ Since Kafka cannot handle audios natively, the audio is also split into two comp
   * If you get size-related errors with 1 second long segments, adjust the topic's max_message_size.
   * Audios are not typically so high-quality for a second-long segment to be so massive that it cannot be sent over Kafka. Having said that, if you are using such ridiculously high-quality audios that 1 second long segments error out even after increasing the topic's max_message_size, consider reducing audio quality. LfK is a transcriptions solution. Audios need to be clear enough for conversations to come through. More is an overkill.
 
-### Audio consumer and transcription producer
-**Pending.**
+### Consuming audios & producing transcriptions (in the transcription hub)
+The files needed for the transcription hub to consume audio messages and produce transcriptions are *consumer_audios.py* and *producer_transcriptions.py*.
 
-I am trying to write one of these sections per week. If you need this information urgently, please get in touch: hello@polyzentrik.com.
+Both create temporary files (wiped out automatically) and thus need writing privileges. Additionally, *consumer_audios.py* recreates the original audio file and writes the transcription to a .txt file (audios and transcriptions can be deleted automatically by using the *CENTRAL_BACKUPS* setting in *.env*).
 
-## Splitting repository into role distributions
+#### Audio consumer
+The consumption of audios *consumer_audios.py* is a relatively straightforward process that can, nonetheless, be lengthy due to the need to call a few AI models to transcribed the audios.
+* LfK checks if a message is the last in a series of messages.
+  * If it is not, it accumulates the message.
+  * If it is, it joins accumulated messages, reconstructs the audio, and triggers transcription.
+* The rest of the process varies depending on the approach requested.
+  * If approach is 'simple': the chosen transcription model is called on the entire audio.
+  * If approach is 'segmentation': a segmentation function breaks the audio into segments determined by pauses in speech, calls the transcription model on each segment, and joins results.
+  * If approach is 'diarisation': a diarisation function breaks the audio into segments corresponding to speakers, calls the transcription model on each segment, and joins results.
+* Timestamps can be enabled/disabled globally via *.env' or specifically for a given audio by adding the keyword "-lfkn0t1m3" to the original audio filename.
+
+At the end of the transcription process, *consumer_audios.py* writes a finalised transcription to the *./transcriptions* folder.
+
+> Note. Kafka can timeout if transcription takes too long. There are settings to manage this and one could even consider completely detaching the audio consumer from the transcription service to avoid any potential timeouts. However, since the idea is to enable near real-time time outputs, the seemingly reasonable alternative is to ensure the transcription hub is powerful enough to avoid unreasonable waiting periods.
+
+#### Transcriptions producer
+Production of transcriptions is simpler than production of audios, but follows a similar two-step logic.
+* Using Watchdog, *producer_transcriptions* detect when a transcription is written to the transcriptions folder.
+* When a transcription is detected, *producer_transcriptions* opens it, reads it, and sends the contents as a Kafka message.
+
+> Note. To avoid redundant messages due to duplicate file operations, the transcription producer creates a cache file with the contents of the very last message sent. If the contents of a potential new message are the exact same as the cache, the new message is flagged as redundant and not sent. This cache file survives deletion even if central backups are turned off.
+
+### Transcriptions consumer (needed in devices receiving the final transcriptions)
+Consumption of transcriptions is handled by *consumer_transcriptions.py*, which is a fairly straightforward.
+* When a new message arrives, the consumer takes the contents of the transcriptions and writes them to a .txt file located in destination folder set in *.env*.
+
+## Creating role-specific distributions
 It makes no sense to pack the entire LfK code base into every single device in your organisation. That would not be smart.
 
 At a minimum, once you have ensured things run appropriately, you will need to split this repository into role-specific distributions and install the corresponding distributions into the appropriate devices.
@@ -170,9 +207,14 @@ At a minimum, once you have ensured things run appropriately, you will need to s
 * Transcription consumers, delete all producers and consumers besides *consumer_transcriptions.py*.
   * If an audio creator is also a transcription consumer, leave both *producer_audios.py* and *consumer_transcriptions.py*.
 
-This is a minimum needed to avoid users producing/consuming without having such role.
+This is a minimum. It would be ideal to also go over all the scripts in the *./utils* folder removing any functions not needed by the particular role.
 
-Additionally, it would be ideal to also go over all the scripts in the *./utils* folder removing any functions not needed by the particular role.
+## This guide is incomplete
+This is the longest guidance document I have ever written. It was very boring, but I did my best to include all major considerations needed to get a sense of how LfK works.
+
+Having said that, I have a feeling that I totally forgot something.
+
+Sorry about that! 
 
 ## Having troubles?
 LfK is a sophisticated solution for a complex problem. Challenges may arise. 

@@ -1,15 +1,9 @@
 # LOKAL for Kafka
-LOKAL for Kafka (LfK) is a Python-Kafka event-driven micro-services solution for distributed audio transcriptions.
+LOKAL for Kafka (LfK) (Alpha) is a Python-Kafka event-driven micro-services solution for distributed audio transcriptions.
 
-Say what!?
+When an audio is saved or recorded to a local computer/device LfK folder (which can be done manually or programmatically), LfK detects it and transfers it to a computing node/hub, where a transcription is created. When the transcription is ready, LfK makes it available to anyone subscribed to the service. If the transcription hub can handle transcriptions as fast as audios arrive, all happens in real-time. Else, messages queue.
 
-Yeah, that's a mouthful.
-
-Here's the summary and a diagram.
-
-When an audio is saved or recorded to a local computer/device LfK folder (which can be done manually or programmatically), LfK automatically detects it and transfers it to a computing node/hub, where a transcription is created. LfK also detects when the transcription is ready and makes it available to anyone subscribed to the service. If the transcription hub can handle transcriptions as fast as audios arrive, all happens in real-time. Otherwise, messages queue and are handled as resources become available.
-
-![Diagram of how LOKAL for Kafka works](./lfk-diagram.png)
+![Diagram of how LOKAL for Kafka works](./assets/lfk-diagram.png)
 
 > *Please note. LfK is **NOT** for sporadic personal usage. If you need transcriptions for yourself, use the original LOKAL instead: https://github.com/jbolns/LOKAL_transcriptions.*
 
@@ -18,9 +12,15 @@ LfK is for situations where the information contained in audio interactions (cal
 
 There are many potential use cases, including – but not limited to – customer service, organisational analytics, multi-location human-machine interactions, and healthcare.
 
-Having said that, LfK is being open-sourced in a generic form to allow integration into broader ecosystems.
+Having said that, LfK is being open-sourced in a generic alpha version to allow integration into broader ecosystems, rather than as a final production-ready plug-and-play solution.
 
-LfK is, therefore, NOT a 'plug-and-play' solution. There is a lot to configure.
+## Flexible
+Instead of enforcing a particular style/quality for the entire organisation, LfK has options to pick between three different transcription approaches ([simple](./assets/example_simple_tiny.txt), [segmented](./assets/example_segmentation_tiny.txt), [diarised](./assets/example_diarisation_tiny.txt)) and all five OpenAI Whisper model sizes/qualities available([tiny](./assets/example_simple_tiny.txt), [base](./assets/example_simple_base.txt), [small](./assets/example_simple_small.txt), [medium](./assets/example_simple_medium.txt), [large](./assets/example_simple_large.txt)). There is also a setting to turn timestamps on and off by default, and a way to opt out from the default.
+
+All options above are available on a transcription-by-transcription basis and can be accessed in one of three manners: 
+* Dragging/dropping audios into the corresponding section of LfK's source folder (not recommended),
+* Giving users an interface/App with straightforward dropdown options (recommended – the original LOKAL can be easily repurposed for this),
+* Programatically placing audios in the appropriate folder (also recommended).
 
 ## Setup guidance
 Setup guidance is available separately. Click [here](./SETUP_GUIDANCE.md) to access it.
@@ -36,20 +36,10 @@ AI is not a magic pill. It has limitations. LfK's limitations include but are no
 
 **Context-awareness.** In its generic form, LfK is not designed to consider the specific needs of any given industry. 
 
-## Having troubles?
-LfK is a sophisticated solution for a complex problem. Challenges may arise. 
-
-Do get in touch if you feel stuck: hello@polyzentrik.com.
-
 ## License
-LfK is an open-source product by [polyzentrik.com](https://www.polyzentrik.com/), released under an Apache 2.0 license. The code is available via GitHub: https://github.com/jbolns/LOKAL_for_Kafka.
+LfK is released under an Apache 2.0 license. The code is available via GitHub: https://github.com/jbolns/LOKAL_for_Kafka.
 
-You are free to use LfK in any way that meets the requirements in the license.
-
-As per the license, LfK comes with no guarantees whatsoever.
-
-## Voluntary payments
-
+## Support the development of LfK
 If you find LfK useful and want it to be maintained, please consider [making a voluntary payment](https://www.polyzentrik.com/help-us-help/).
 
-Better yet, get in touch for implementation assistance and continued support: hello@polyzentrik.com.
+Or get in touch for implementation assistance and continued support: hello@polyzentrik.com.
