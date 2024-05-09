@@ -1,3 +1,15 @@
+'''
+LOKAL for Kafka (LfK), v1. May 2024.
+@author: Dr J.
+
+Except for absolutely necessary classes, LfK tries to stick to a functional programming paradigm.
+Any classes must be justified exceptionally well.
+
+Copyright (c) 2024 Jose A Bolanos / Polyzentrik Tmi.
+SPDX-License-Identifier: Apache-2.0.
+
+'''
+
 def recommended_chunk_size(path_to_audio, schema_type):
         ''' Gets a path to a audio and figures out recommended audio chunk size
             based on audio duration, size of file, and parameters from .env.

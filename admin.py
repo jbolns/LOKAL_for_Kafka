@@ -1,3 +1,14 @@
+'''
+LOKAL for Kafka (LfK), v1. May 2024.
+@author: Dr J.
+
+To be fair, this file is barely my code. The file is based on this approach:
+https://developer.confluent.io/courses/kafka-python/adminclient-class-hands-on/
+
+with minor mods to create Avro or JSON topics as determined by .env.
+
+'''
+
 # ..................
 # SECTION: TOP-LEVEL IMPORTS
 # ..................
