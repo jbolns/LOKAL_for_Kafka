@@ -12,7 +12,7 @@ LfK is for situations where MANY audios are created across MANY places and trans
 
 Many use cases exist, including – but not limited to – customer service, organisational analytics, multi-location human-machine interactions, and healthcare.
 
-That said, LfK is **NOT** for personal usage. If you need just a few transcriptions for yourself or a project, check the [original LOKAL](https://github.com/jbolns/LOKAL_transcriptions).
+That said, LfK is meant as a component for broader microservice ecosystems rather than as a standalone solution in itself. For a standalone transcriptions app, see the [original LOKAL](https://github.com/jbolns/LOKAL_transcriptions).
 
 ## Example outputs
 LfK is fairly flexible. It allows user to pick between several approaches to transcription ([simple](./assets/example_simple_tiny.txt), [segmented](./assets/example_segmentation_tiny.txt), [diarised](./assets/example_diarisation_tiny.txt)) and five OpenAI Whisper model sizes/qualities available ([tiny](./assets/example_simple_tiny.txt), [base](./assets/example_simple_base.txt), [small](./assets/example_simple_small.txt), [medium](./assets/example_simple_medium.txt), [large](./assets/example_simple_large.txt)).
