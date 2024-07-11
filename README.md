@@ -49,9 +49,9 @@ LfK uses OpenAI's Whisper models and pyannote's models for segmentation and diar
     * Save to: *models\diarization* (be sure to also include a copy of the LICENSE and provide appropriate credits).
 
 #### Other
-1. [FFmpeg](https://www.ffmpeg.org/) is absolutely required.
+1. [FFmpeg](https://www.ffmpeg.org/) is absolutely required (if running in pure Python) (loads automatically when run as a docker container).
 2. You may also want to erase *dummy.md* files from the following folders: *./models* (check recursively), *./sources*, *./async*, *./transcriptions*, *./utils/temp* – there only to force folder structure onto repository.
-3. Finally, you will need to define an approach to partitions and adjust line 96 of *./audio_transcriptions_producer* to match. Since this is a decision that can only be made once real-world factors are considered, keys are currently simply tied to the type of transcription performed, which is doubtedly optimal.
+3. Finally, you will need to define an approach to partitions and adjust line #96 of *./audio_transcriptions_producer* to match. Since this is a decision that can only be made once real-world factors are considered, keys are currently simply tied to the type of transcription performed, which is doubtedly optimal.
 
 ### Configure LfK
 
