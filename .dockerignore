@@ -1,0 +1,32 @@
+# Docker files
+.dockerignore
+compose.yml
+Dockerfile
+
+# Scripts not needed on main transcriptions hub
+admin.py
+transcriptions_consumer.py
+broadcast.py
+run_hub.py
+
+# Dev
+.git
+.gitignore
+.vscode
+.venv
+.env
+.confluent
+**/dummy.md
+.env.example
+LICENSE
+NOTICE
+SETUP_GUIDANCE.md
+
+# Assets
+.external-licenses/dist
+README.md
+assets/lfk-diagram.svg
+
+# Misc
+**/__pycache__
+

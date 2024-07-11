@@ -1,6 +1,6 @@
 # Admin files & folders that may accidentally escape
 # Root
-__pycache__/
+__pycache__
 .confluent
 .external-licenses/dist
 .vscode
@@ -14,7 +14,6 @@ utils/__pycache__
 
 # Development assets
 assets/lfk-diagram.svg
-
 
 # Models saved locally for testing (LOKAL doesn't need them for setup - they download when called/used)
 # pyannote (segmentation & diarisation)

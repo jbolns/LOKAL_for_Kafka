@@ -1,0 +1,29 @@
+services:
+
+  # Container consumes audio locations, retrieves, and places in async folder
+  lfk-consumer: &base
+
+    tty: true
+    
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    env_file:
+      - .env
+
+    volumes:
+      - ./async-volume:/usr/src/lfk/async
+    
+    container_name: lfk-hub
+
+    command: python audio_consumer.py
+  
+
+  # Container performs transcriptions
+  lfk-watcher:
+    <<: *base
+
+    container_name: lfk-watcher
+
+    command: python audio_watch.py

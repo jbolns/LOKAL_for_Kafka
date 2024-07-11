@@ -2,7 +2,8 @@
 LOKAL for Kafka (LfK), v1. May 2024.
 @author: Dr J.
 
-Except for absolutely necessary classes, LfK tries to stick to a functional programming paradigm.
+Except for absolutely necessary classes,
+LfK tries to stick to a functional programming paradigm.
 Any classes must be justified exceptionally well.
 
 Copyright (c) 2024 Jose A Bolanos / Polyzentrik Tmi.
@@ -10,56 +11,56 @@ SPDX-License-Identifier: Apache-2.0.
 
 '''
 
-audio_str = """{
-    "$schema": "http://json-schema.org/draft-07/schema#",
-    "title": "audio",
-    "description": "Audio segments",
+# ..................
+# FILE SUMMARY
+# ...
+# File containst JSON schema strings, used by Kafka producers and consumers
+
+
+# ..................
+# SHEMA STRINGS
+# ...
+# Schema for messaging/broadcasting system events
+event_broadcast_str = """{
+    "$schema": "https://json-schema.org/draft-07/schema#",
+    "$id": "memory-change-response.json",
+    "title": "Storage Change Response",
+    "description": "A schema to update the network on filesystem operations",
     "type": "object",
     "properties": {
-        "path_to_audio": {
-            "description": "Path to audio original location",
+        "event_type": {
+            "description": "The type of event",
             "type": "string"
         },
-        "transcription_approach": {
-            "description": "Approach for transcription and model size",
+        "path": {
+            "description": "The path of the memory item",
             "type": "string"
         },
-        "final": {
-            "description": "Marker to flag last audio segment in a series",
-            "type": "boolean"
-        },
-        "params": {
-            "description": "Audio headers/metadata",
-            "type": "string"
-        },
-        "frames": {
-            "description": "Audio content in bytes",
-            "type": "string"
-        },
-        "timestamp": {
-            "description": "Time of reading in ms since epoch",
-            "type": "number"
+        "operation_metadata": {
+            "description": "Metadata about operation or for future operations",
+            "type": "object",
+            "additionalProperties": true
         }
     }
 }"""
 
-
+# Schema for messaging transcription outputs
 transcription_str = """{
-    "$schema": "https://json-schema.org/draft/2020-12/schema",
-    "title": "audio_object",
-    "description": "Audio segments",
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "final_transcriptions",
+    "description": "A schema to use when messaging finalised transcriptions",
     "type": "object",
     "properties": {
         "path_to_transcription": {
             "description": "Path to location of transcription",
             "type": "string"
         },
-        "transcription_approach": {
-            "description": "Approach for transcription and model size",
+        "metadata": {
+            "description": "Settings used during transcription",
             "type": "string"
         },
         "content": {
-            "description": "Contents of transcription",
+            "description": "Transcribed contents of audio",
             "type": "string"
         },
         "timestamp": {
