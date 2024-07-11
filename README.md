@@ -1,36 +1,32 @@
 # LOKAL for Kafka
-LOKAL for Kafka (LfK). Python + Kafka micro-services solution for distributed audio transcriptions. If the main transcription node can handle transcriptions as fast as audios arrive, things happen in near real time. Else, messages queue.
+LOKAL for Kafka (LfK). Python + Kafka micro-services solution for distributed audio transcriptions:
 
-Here's a quick diagram. 
+1. Audio is recorded/created and messaged to Kafka
+2. LfK transfers it to a transcriptions hub
+3. When transcription is ready, LfK messages result back to Kafka
 
 ![Diagram of how LOKAL for Kafka works](./assets/lfk-diagram.png)
 
-1. Audio is saved or recorded to a local computer/device LfK folder (manually or programmatically)
-2. LfK detects it and transfers it to a computing node/hub, where a transcription is created.
-3. Transcription is created at the computing hub. 
-4. When the transcription is ready, LfK makes it available to anyone subscribed to the service.
-
-**Please note.** LfK is **NOT** for personal / sporadic usage. If you need just a few transcriptions for yourself or a project, check the original LOKAL instead, an edge-AI app that can help you to easily transcribe audios directly on your computer: https://github.com/jbolns/LOKAL_transcriptions.
-
 ## A component for broader ecosystems
-LfK is for situations where audios are created across many places and transcriptions are needed elsewhere or across large organisations.
+LfK is for situations where MANY audios are created across MANY places and transcriptions are needed elsewhere or across MANY places.
 
-Many potential use cases exist, including – but not limited to – customer service, organisational analytics, multi-location human-machine interactions, and healthcare.
+Many use cases exist, including – but not limited to – customer service, organisational analytics, multi-location human-machine interactions, and healthcare.
 
-Having said that, LfK is being open-sourced in a generic alpha version to allow integration into broader ecosystems, rather than as a production-ready standalone solution.
+That said, LfK is **NOT** for personal usage. If you need just a few transcriptions for yourself or a project, check the [original LOKAL](https://github.com/jbolns/LOKAL_transcriptions).
 
-## Flexible
-LfK has options to pick between three different transcription approaches ([simple](./assets/example_simple_tiny.txt), [segmented](./assets/example_segmentation_tiny.txt), [diarised](./assets/example_diarisation_tiny.txt)) and all five OpenAI Whisper model sizes/qualities available ([tiny](./assets/example_simple_tiny.txt), [base](./assets/example_simple_base.txt), [small](./assets/example_simple_small.txt), [medium](./assets/example_simple_medium.txt), [large](./assets/example_simple_large.txt)). There is also a setting to turn timestamps on and off by default, and a way to opt out from the default.
+## Example outputs
+LfK is fairly flexible. It allows user to pick between several approaches to transcription ([simple](./assets/example_simple_tiny.txt), [segmented](./assets/example_segmentation_tiny.txt), [diarised](./assets/example_diarisation_tiny.txt)) and five OpenAI Whisper model sizes/qualities available ([tiny](./assets/example_simple_tiny.txt), [base](./assets/example_simple_base.txt), [small](./assets/example_simple_small.txt), [medium](./assets/example_simple_medium.txt), [large](./assets/example_simple_large.txt)).
 
-All options above can be accessed on a transcription-by-transcription basis by:
-* Manually dropping audios into the appropriate LfK folder (OK for testing, not recommended otherwise),
-* Coding an interface that acts as a producer (recommended – the original LOKAL can be repurposed for this),
-* Programatically placing audios into the appropriate LFK folder (also recommended).
+## Flavoured distribution approach
 
-## Setup guidance
-Setup guidance is available [here](./SETUP_GUIDANCE.md). Please note guidance is intended for developers with knowledge of both Kafka and Python.
+### Main branch is a non-deployable foundation
+**Do NOT implement from main branch.** The main branch is a base to develop flavoured LfK distributions using **either** JSON or Avro schemas and messaging **either** full audios or audio locations. The branch, thus, contains redundant chunks not needed in any given approach (one opts between full audios or locations and between JSON and Avro), can be in a broken state, and is often out-of-sync with other branches. Use only if you want to help develop LfK further.
 
-Implementation assistance and support is available at a reasonable cost: hello@polyzentrik.com.
+### Deployable "flavours" available at other branches
+For slimmed down flavoured LfK distributions that are more easily deployable as a microservice, see tailored branches for:
+* [JSON schemas + location-based messaging](https://github.com/jbolns/LOKAL_for_Kafka/tree/location-based-json). This branch contains a slimmed down LfK distribution that is more easily compatible with systems using JSON schemas and location-based audio messaging (Kafka messages contain the locations of audios rather than the audios themselves).
+
+Or get in touch to request an additional tailored branch fully matching your system characteristics: hello@polyzentrik.com.
 
 ## Known limitations
 AI is not a magic pill. It has limitations. LfK's limitations include:
@@ -47,4 +43,4 @@ LfK is released under an Apache 2.0 license. The code is available via GitHub: h
 ## Contribute or support the development of LfK
 If you find LfK useful and want it to be maintained, please consider [making a voluntary payment](https://www.polyzentrik.com/help-us-help/).
 
-If you want to contribute differently, perhaps with code or other kind of knowledge-based contributions, the first thing needed is someone who can motivate and manage contributions.
+Alternatively, get in touch to contribute differently (perhaps with code or other kind of knowledge-based contributions).
